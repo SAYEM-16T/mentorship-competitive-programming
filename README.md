@@ -1,1 +1,0 @@
-# mentorship-competitive-programming
