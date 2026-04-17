@@ -1,4 +1,4 @@
-# ✅ Bubble Sort (সবচেয়ে সহজ)
+# ✅ Bubble Sort
 
 ```cpp
 #include <bits/stdc++.h>
