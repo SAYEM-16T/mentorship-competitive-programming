@@ -64,3 +64,47 @@ int main() {
         cout << "Not Found";
 }
 ```
+
+
+
+
+
+---
+
+# 🔵 Sorting (5)
+
+1. Codeforces 405A - Gravity Flip
+   👉 [https://codeforces.com/problemset/problem/405/A](https://codeforces.com/problemset/problem/405/A)
+
+2. Codeforces 490A - Team Olympiad
+   👉 [https://codeforces.com/problemset/problem/490/A](https://codeforces.com/problemset/problem/490/A)
+
+3. Codeforces 230A - Dragons
+   👉 [https://codeforces.com/problemset/problem/230/A](https://codeforces.com/problemset/problem/230/A)
+
+4. Codeforces 339A - Helpful Maths
+   👉 [https://codeforces.com/problemset/problem/339/A](https://codeforces.com/problemset/problem/339/A)
+
+5. Codeforces 160A - Twins
+   👉 [https://codeforces.com/problemset/problem/160/A](https://codeforces.com/problemset/problem/160/A)
+
+---
+
+# 🟣 Searching (5)
+
+6. Codeforces 41A - Translation
+   👉 [https://codeforces.com/problemset/problem/41/A](https://codeforces.com/problemset/problem/41/A)
+
+7. Codeforces 59A - Word
+   👉 [https://codeforces.com/problemset/problem/59/A](https://codeforces.com/problemset/problem/59/A)
+
+8. Codeforces 474A - Keyboard
+   👉 [https://codeforces.com/problemset/problem/474/A](https://codeforces.com/problemset/problem/474/A)
+
+9. Codeforces 500A - New Year Transportation
+   👉 [https://codeforces.com/problemset/problem/500/A](https://codeforces.com/problemset/problem/500/A)
+
+10. Codeforces 702A - Maximum Increase
+    👉 [https://codeforces.com/problemset/problem/702/A](https://codeforces.com/problemset/problem/702/A)
+
+---
