@@ -1,12 +1,8 @@
-# Stack — Student Teaching Note + CP Practice
-
-**Topic:** Stack in C++
-
----
+# Stack
 
 ## 1. Stack কী?
 
-**Stack** হলো এমন একটি linear data structure যেখানে data ঢোকানো এবং বের করা হয় একই দিক থেকে। এই দিককে বলা হয় **top**।
+**Stack** হলো একটি linear data structure যেখানে data insert এবং remove করা হয় একই দিক থেকে। এই দিককে বলা হয় **top**।
 
 Stack-এর main rule:
 
@@ -30,26 +26,24 @@ Top -> 30
        10
 ```
 
-এখন `pop()` করলে 30 বের হবে, কারণ 30 সবার শেষে ঢুকেছিল।
+এখন `pop()` করলে `30` বের হবে, কারণ `30` সবার শেষে ঢুকেছিল।
 
 ---
 
-## 2. Real-life analogy
+## 2. Stack বোঝার real-life analogy
 
-Stack বোঝানোর জন্য কয়েকটা easy analogy:
+### 2.1 Plate stack
 
-### 1. Plate stack
-
-বিয়ের অনুষ্ঠানে plate একটার উপর একটা রাখা থাকে।
+ধরো একটার উপর একটা plate রাখা আছে।
 
 ```text
 Top plate -> সবার আগে নেওয়া যায়
 Bottom plate -> আগে নেওয়া যায় না
 ```
 
-শেষে রাখা plate আগে নেওয়া হয়। তাই এটি LIFO।
+শেষে রাখা plate আগে নেওয়া হয়। তাই এটি LIFO behavior।
 
-### 2. Browser back button
+### 2.2 Browser back button
 
 তুমি browser-এ visit করলে:
 
@@ -57,9 +51,9 @@ Bottom plate -> আগে নেওয়া যায় না
 Google -> YouTube -> Codeforces -> AtCoder
 ```
 
-Back চাপলে আগে AtCoder থেকে Codeforces-এ যাবে। শেষ page আগে বের হয়।
+Back চাপলে আগে AtCoder থেকে Codeforces-এ যাবে। শেষ page আগে remove হয়।
 
-### 3. Undo operation
+### 2.3 Undo operation
 
 Editor-এ কাজ করলে:
 
@@ -71,7 +65,7 @@ Type C
 
 Undo করলে আগে C remove হবে, তারপর B, তারপর A।
 
-### 4. Recursion call stack
+### 2.4 Recursion call stack
 
 Function call করলে computer internally stack use করে।
 
@@ -88,7 +82,7 @@ fun2() calls fun3()
 
 | Operation          | Meaning                    | Time Complexity |
 | ------------------ | -------------------------- | --------------- |
-| `push(x)`          | top এ x insert করে         | `O(1)`          |
+| `push(x)`          | top এ `x` insert করে       | `O(1)`          |
 | `pop()`            | top element remove করে     | `O(1)`          |
 | `top()` / `peek()` | top element দেখায়          | `O(1)`          |
 | `empty()`          | stack empty কিনা check করে | `O(1)`          |
@@ -124,7 +118,7 @@ if (!st.empty()) {
 
 ## 4. C++ STL Stack
 
-Competitive programming-এ সাধারণত STL stack use করাই best।
+Competitive programming-এ সাধারণত STL stack use করাই সবচেয়ে convenient।
 
 ```cpp
 #include <bits/stdc++.h>
@@ -141,7 +135,7 @@ int main() {
 
     st.pop();
 
-    cout << st.top() << "\n"; // 20
+    cout << st.top() << "\n";  // 20
     cout << st.size() << "\n"; // 2
     cout << st.empty() << "\n"; // 0 means false
 
@@ -149,11 +143,61 @@ int main() {
 }
 ```
 
+### STL stack functions
+
+| Function     | কাজ                             |
+| ------------ | ------------------------------- |
+| `st.push(x)` | stack এর top এ `x` insert করে   |
+| `st.pop()`   | top element remove করে          |
+| `st.top()`   | top element return করে          |
+| `st.empty()` | stack empty হলে true return করে |
+| `st.size()`  | stack এর size return করে        |
+
 ---
 
-## 5. Manual stack implementation using array
+## 5. Dry run practice
 
-Stack internally কীভাবে কাজ করে সেটা বোঝানোর জন্য array implementation দেখানো ভালো।
+নিচের operations গুলো নিজে হাতে dry run করো:
+
+```text
+push(10)
+push(20)
+push(30)
+pop()
+push(40)
+top()
+```
+
+Step by step:
+
+```text
+push(10): 10
+push(20): 20, 10
+push(30): 30, 20, 10
+pop():    20, 10
+push(40): 40, 20, 10
+top():    40
+```
+
+Final stack:
+
+```text
+Top -> 40
+       20
+       10
+```
+
+So, `top()` এর output হবে:
+
+```text
+40
+```
+
+---
+
+## 6. Manual stack implementation using array
+
+STL stack ব্যবহার করার আগে stack internally কীভাবে কাজ করে সেটা বোঝা ভালো।
 
 ### Idea
 
@@ -218,21 +262,30 @@ public:
 
 int main() {
     StackArray st;
+
     st.push(10);
     st.push(20);
     st.push(30);
 
     cout << st.top() << "\n"; // 30
+
     st.pop();
+
     cout << st.top() << "\n"; // 20
 }
 ```
 
+### Edge cases
+
+* Empty stack থেকে `pop()` করলে **underflow**।
+* Empty stack থেকে `top()` করলে invalid access।
+* Fixed-size array full হয়ে গেলে `push()` করলে **overflow**।
+
 ---
 
-## 6. Stack using vector
+## 7. Stack using vector
 
-Array fixed size হলে overflow হতে পারে। `vector` dynamic হওয়ায় CP-তে অনেক সময় useful।
+Array fixed size হলে overflow হতে পারে। `vector` dynamic হওয়ায় অনেক সময় easier।
 
 ```cpp
 #include <bits/stdc++.h>
@@ -267,49 +320,84 @@ public:
 };
 ```
 
----
-
-## 7. Classroom dry run
-
-Operations:
-
-```text
-push(10)
-push(20)
-push(30)
-pop()
-push(40)
-top()
-```
-
-Step by step:
-
-```text
-push(10): 10
-push(20): 20, 10
-push(30): 30, 20, 10
-pop():    20, 10
-push(40): 40, 20, 10
-top():    40
-```
-
-Final stack:
-
-```text
-Top -> 40
-       20
-       10
-```
-
-Output of `top()` is `40`.
+এখানে `vector` এর last element-কে stack top হিসেবে ধরা হয়েছে।
 
 ---
 
-## 8. Application 1: Balanced Parentheses
+## 8. Stack using linked list
+
+Linked list দিয়েও stack implement করা যায়। এখানে linked list-এর head-কে stack top ধরা হয়।
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+
+    Node(int value) {
+        data = value;
+        next = nullptr;
+    }
+};
+
+class StackLinkedList {
+private:
+    Node* topNode;
+
+public:
+    StackLinkedList() {
+        topNode = nullptr;
+    }
+
+    bool empty() {
+        return topNode == nullptr;
+    }
+
+    void push(int x) {
+        Node* newNode = new Node(x);
+        newNode->next = topNode;
+        topNode = newNode;
+    }
+
+    void pop() {
+        if (empty()) {
+            cout << "Stack Underflow\n";
+            return;
+        }
+
+        Node* temp = topNode;
+        topNode = topNode->next;
+        delete temp;
+    }
+
+    int top() {
+        if (empty()) {
+            cout << "Stack is empty\n";
+            return -1;
+        }
+        return topNode->data;
+    }
+};
+```
+
+### Array vs linked list stack
+
+| Topic                | Array stack            | Linked list stack      |
+| -------------------- | ---------------------- | ---------------------- |
+| Memory               | fixed size হলে limited | dynamic                |
+| Extra pointer memory | লাগে না                | লাগে                   |
+| Implementation       | easier                 | pointer knowledge লাগে |
+| CP use               | STL/vector বেশি common | কম common              |
+
+---
+
+## 9. Application 1: Balanced Parentheses
 
 ### Problem idea
 
-String দেওয়া আছে। Check করতে হবে brackets balanced কিনা।
+একটি string দেওয়া আছে। Check করতে হবে brackets balanced কিনা।
 
 Balanced:
 
@@ -376,7 +464,7 @@ Space: O(n)
 
 ---
 
-## 9. Application 2: Backspace / Undo style problem
+## 10. Application 2: Backspace / Undo style problem
 
 ধরো string-এ `B` মানে backspace।
 
@@ -432,7 +520,7 @@ Note: এখানে `string`-কেই stack এর মতো use করা �
 
 ---
 
-## 10. Application 3: Remove adjacent duplicate / cancellation
+## 11. Application 3: Remove adjacent duplicate / cancellation
 
 অনেক problem-এ বলা থাকে পাশের দুইটা same হলে remove হবে।
 
@@ -477,7 +565,7 @@ int main() {
 
 ---
 
-## 11. Application 4: Next Greater Element
+## 12. Application 4: Next Greater Element
 
 ### Problem
 
@@ -530,11 +618,11 @@ Why `O(n)`?
 
 ---
 
-## 12. Monotonic Stack pattern
+## 13. Monotonic Stack pattern
 
 **Monotonic stack** এমন stack যেখানে elements increasing/decreasing order maintain করে রাখা হয়।
 
-এই phrase গুলো দেখলে stack ভাববে:
+এই phrase গুলো দেখলে stack ভাবতে পারো:
 
 * next greater element
 * next smaller element
@@ -567,9 +655,9 @@ vector<int> nextSmaller(vector<int>& a) {
 
 ---
 
-## 13. Advanced Application: Largest Rectangle in Histogram
+## 14. Advanced Application: Largest Rectangle in Histogram
 
-এই problem advanced, কিন্তু stack শেখানোর জন্য খুব important।
+এই problem একটু advanced, কিন্তু stack শেখার জন্য খুব important।
 
 ### Main idea
 
@@ -621,7 +709,21 @@ int main() {
 
 ---
 
-## 14. Common mistakes
+## 15. Stack vs Queue quick difference
+
+| Topic   | Stack        | Queue        |
+| ------- | ------------ | ------------ |
+| Rule    | LIFO         | FIFO         |
+| Insert  | top          | back/rear    |
+| Remove  | top          | front        |
+| Analogy | plate stack  | line/queue   |
+| C++ STL | `stack<int>` | `queue<int>` |
+
+Stack-এ শেষ element আগে বের হয়। Queue-তে আগে ঢোকা element আগে বের হয়।
+
+---
+
+## 16. Common mistakes
 
 1. Empty stack হলে `top()` call করা।
 2. Empty stack হলে `pop()` call করা।
@@ -634,51 +736,39 @@ int main() {
 
 ---
 
-## 15. Stack vs Queue quick difference
+## 17. CP pattern recognition
 
-| Topic   | Stack        | Queue        |
-| ------- | ------------ | ------------ |
-| Rule    | LIFO         | FIFO         |
-| Insert  | top          | back/rear    |
-| Remove  | top          | front        |
-| Analogy | plate stack  | line/queue   |
-| C++ STL | `stack<int>` | `queue<int>` |
+Stack use করার কথা ভাববে যখন problem-এ এই ধরনের idea থাকে:
 
----
+### 17.1 Matching pair
 
-## 16. Teaching flow
+Example:
 
-### Class 1: Concept + Basic Operations
+```text
+(), {}, []
+```
 
-1. Plate analogy দিয়ে LIFO explain.
-2. `push`, `pop`, `top`, `empty`, `size` বোঝানো।
-3. Board-এ stack dry run।
-4. Array implementation দেখানো।
-5. Overflow/underflow explain।
+Bracket matching problem usually stack দিয়ে solve হয়।
 
-### Class 2: STL + Easy CP Pattern
+### 17.2 Last action undo করতে হবে
 
-1. `stack<int>` and `stack<char>` use।
-2. Balanced parentheses solve।
-3. Backspace/undo problem solve।
-4. Adjacent duplicate cancellation।
+Backspace, undo, browser back button — এগুলো stack behavior।
 
-### Class 3: Monotonic Stack
+### 17.3 Adjacent cancellation
 
-1. Next greater element naive `O(n^2)` explain।
-2. Stack solution `O(n)` explain।
-3. Next smaller template।
-4. Practice problem discussion।
+যদি problem বলে পাশের দুইটা same/different হলে remove হবে, stack useful হতে পারে।
 
-### Class 4: Advanced
+### 17.4 Nearest greater/smaller দরকার
 
-1. Histogram rectangle।
-2. Mixed bracket replacement।
-3. Contest-style practice।
+Next greater, next smaller, previous greater, previous smaller — এগুলো monotonic stack problem।
+
+### 17.5 Nested structure
+
+Nested bracket, nested expression, encoded string — stack দিয়ে inner part আগে process করা যায়।
 
 ---
 
-## 17. 12 Practice Problems — 4 each from Codeforces, AtCoder, CodeChef
+## 18. 12 Practice Problems — 4 each from Codeforces, AtCoder, CodeChef
 
 ### Codeforces — 4 problems
 
@@ -730,9 +820,9 @@ Links:
 
 ---
 
-## 18. Suggested order for students
+## 19. Suggested solving order
 
-Students যেন easy থেকে hard order-এ solve করে:
+Easy থেকে hard order-এ solve করলে ভালো হবে:
 
 1. CodeChef STACK08 — Stack Introduction
 2. AtCoder ABC043 B — Unhappy Hacking
@@ -749,37 +839,40 @@ Students যেন easy থেকে hard order-এ solve করে:
 
 ---
 
-## 19. Mini contest plan
+## 20. Self-check questions
 
-Duration: 90 minutes
+নিজে নিজে answer করার চেষ্টা করো:
 
-| Problem | Topic                 | Difficulty  |
-| ------- | --------------------- | ----------- |
-| A       | Basic stack operation | Easy        |
-| B       | Backspace simulation  | Easy        |
-| C       | Balanced parentheses  | Easy-Medium |
-| D       | Adjacent cancellation | Medium      |
-| E       | Next greater element  | Medium      |
+1. Stack কেন LIFO data structure?
+2. `push`, `pop`, `top` এর time complexity কত?
+3. C++ STL stack-এ `pop()` কি value return করে?
+4. Empty stack হলে `top()` call করলে কী problem হতে পারে?
+5. Balanced parentheses problem-এ opening bracket কেন stack-এ push করা হয়?
+6. Next greater element problem-এ index store করা better কেন?
+7. Monotonic stack-এ প্রতিটি element সর্বোচ্চ কয়বার push এবং pop হয়?
+8. Stack আর queue-এর main difference কী?
 
 ---
 
-## 20. Final revision
+## 21. Final revision
 
 * Stack follows **LIFO**.
-* `push`, `pop`, `top`, `empty`, `size` are main operations.
+* Stack-এর এক পাশকে বলা হয় **top**।
+* `push`, `pop`, `top`, `empty`, `size` হলো main operations।
 * `push`, `pop`, `top` usually `O(1)`।
 * C++ STL stack-এ `pop()` value return করে না।
 * Always check `empty()` before `top()` or `pop()`।
 * Bracket matching, undo/backspace, recursion, expression evaluation, DFS simulation, next greater/smaller — এসব জায়গায় stack লাগে।
-* Monotonic stack শেখা CP-র জন্য very important।
+* Monotonic stack শেখা competitive programming-এর জন্য very important।
 
 ---
 
-## 21. Homework
+## 22. Homework / Practice task
 
 1. Stack using array implement করো।
 2. Stack using vector implement করো।
-3. Balanced parentheses solve করো।
-4. Next greater element solve করো।
-5. Practice list থেকে minimum 5টা problem solve করো।
-6. প্রতিটা solution-এর time and space complexity লিখো।
+3. Stack using linked list implement করো।
+4. Balanced parentheses problem solve করো।
+5. Next greater element problem solve করো।
+6. Practice list থেকে minimum 5টা problem solve করো।
+7. প্রতিটা solution-এর time and space complexity লিখো।
