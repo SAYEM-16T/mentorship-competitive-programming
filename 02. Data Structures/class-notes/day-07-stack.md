@@ -1,95 +1,168 @@
-# Stack — Teaching Plan & Competitive Programming Notes
+# Stack — Student Teaching Note + CP Practice
 
-**Course context:** ICT 2101 Data Structures — Stack: Introduction, stack operations (`push`, `pop`), stack implementation, and stack applications.  
-**CP focus:** problem-solving patterns where Last-In-First-Out (LIFO) behavior gives an efficient solution.
-
----
-
-## 1. Learning Outcomes
-
-After this module, students should be able to:
-
-1. Explain Stack as an Abstract Data Type (ADT).
-2. Identify LIFO behavior in real-life and programming problems.
-3. Implement Stack using:
-   - Array / static array
-   - Dynamic array / `vector`
-   - Linked list
-   - STL `stack`
-4. Analyze time and space complexity of stack operations.
-5. Apply stack in competitive programming problems:
-   - Balanced parentheses
-   - Next Greater / Smaller Element
-   - Monotonic Stack
-   - Expression conversion/evaluation
-   - DFS simulation
-   - Histogram / rectangle problems
-   - Undo-style state tracking
+**Topic:** Stack in C++
 
 ---
 
-## 2. Prerequisites
+## 1. Stack কী?
 
-Students should already know:
+**Stack** হলো এমন একটি linear data structure যেখানে data ঢোকানো এবং বের করা হয় একই দিক থেকে। এই দিককে বলা হয় **top**।
 
-- Basic C/C++ syntax
-- Array and pointer basics
-- Functions and loops
-- Basic complexity: `O(1)`, `O(n)`, `O(n log n)`
-- Linked list basics, if linked-list stack is covered
+Stack-এর main rule:
 
----
+> **LIFO = Last In, First Out**
 
-## 3. Core Concept: What is a Stack?
+মানে, যে element সবার শেষে ঢুকেছে, সে-ই সবার আগে বের হবে।
 
-A **Stack** is a linear data structure where insertion and deletion happen from one side only, called the **top**.
+### ছোট example
 
-### Rule
+```text
+push(10)
+push(20)
+push(30)
+```
 
-> Last In, First Out — **LIFO**
+তাহলে stack হবে:
 
-The last element inserted is the first element removed.
+```text
+Top -> 30
+       20
+       10
+```
 
-### Real-life examples
-
-- Stack of plates
-- Browser back button
-- Undo operation in editor
-- Recursion call stack
-- Function calls
+এখন `pop()` করলে 30 বের হবে, কারণ 30 সবার শেষে ঢুকেছিল।
 
 ---
 
-## 4. Stack ADT Operations
+## 2. Real-life analogy
 
-| Operation | Meaning | Complexity |
-|---|---|---|
-| `push(x)` | Insert `x` at top | `O(1)` |
-| `pop()` | Remove top element | `O(1)` |
-| `top()` / `peek()` | Return top element | `O(1)` |
-| `empty()` | Check if stack has no element | `O(1)` |
-| `size()` | Number of elements | `O(1)` if maintained |
+Stack বোঝানোর জন্য কয়েকটা easy analogy:
 
-### Important edge cases
+### 1. Plate stack
 
-- Pop from empty stack → underflow
-- Top from empty stack → invalid access
-- Push into full fixed-size array stack → overflow
+বিয়ের অনুষ্ঠানে plate একটার উপর একটা রাখা থাকে।
+
+```text
+Top plate -> সবার আগে নেওয়া যায়
+Bottom plate -> আগে নেওয়া যায় না
+```
+
+শেষে রাখা plate আগে নেওয়া হয়। তাই এটি LIFO।
+
+### 2. Browser back button
+
+তুমি browser-এ visit করলে:
+
+```text
+Google -> YouTube -> Codeforces -> AtCoder
+```
+
+Back চাপলে আগে AtCoder থেকে Codeforces-এ যাবে। শেষ page আগে বের হয়।
+
+### 3. Undo operation
+
+Editor-এ কাজ করলে:
+
+```text
+Type A
+Type B
+Type C
+```
+
+Undo করলে আগে C remove হবে, তারপর B, তারপর A।
+
+### 4. Recursion call stack
+
+Function call করলে computer internally stack use করে।
+
+```cpp
+fun1() calls fun2()
+fun2() calls fun3()
+```
+
+প্রথমে `fun3()` শেষ হবে, তারপর `fun2()`, তারপর `fun1()`।
 
 ---
 
-## 5. Stack Implementation Using Array
+## 3. Stack operations
+
+| Operation          | Meaning                    | Time Complexity |
+| ------------------ | -------------------------- | --------------- |
+| `push(x)`          | top এ x insert করে         | `O(1)`          |
+| `pop()`            | top element remove করে     | `O(1)`          |
+| `top()` / `peek()` | top element দেখায়          | `O(1)`          |
+| `empty()`          | stack empty কিনা check করে | `O(1)`          |
+| `size()`           | stack এ কয়টা element আছে   | `O(1)`          |
+
+### Important warning
+
+C++ STL stack-এ `pop()` value return করে না।
+
+ভুল:
+
+```cpp
+int x = st.pop(); // wrong
+```
+
+সঠিক:
+
+```cpp
+int x = st.top();
+st.pop();
+```
+
+আর `top()` বা `pop()` করার আগে অবশ্যই `empty()` check করতে হবে।
+
+```cpp
+if (!st.empty()) {
+    cout << st.top() << "\n";
+    st.pop();
+}
+```
+
+---
+
+## 4. C++ STL Stack
+
+Competitive programming-এ সাধারণত STL stack use করাই best।
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    stack<int> st;
+
+    st.push(10);
+    st.push(20);
+    st.push(30);
+
+    cout << st.top() << "\n"; // 30
+
+    st.pop();
+
+    cout << st.top() << "\n"; // 20
+    cout << st.size() << "\n"; // 2
+    cout << st.empty() << "\n"; // 0 means false
+
+    return 0;
+}
+```
+
+---
+
+## 5. Manual stack implementation using array
+
+Stack internally কীভাবে কাজ করে সেটা বোঝানোর জন্য array implementation দেখানো ভালো।
 
 ### Idea
 
-Maintain an integer `topIndex`.
+আমরা একটা variable রাখব: `topIndex`।
 
-- Initially `topIndex = -1`
-- `push(x)` → increment `topIndex`, assign value
-- `pop()` → decrement `topIndex`
-- `top()` → `arr[topIndex]`
-
-### C++ Code
+* শুরুতে `topIndex = -1`
+* `push(x)` করলে `topIndex++`, তারপর value রাখব
+* `pop()` করলে `topIndex--`
+* `top()` মানে `arr[topIndex]`
 
 ```cpp
 #include <bits/stdc++.h>
@@ -118,7 +191,8 @@ public:
             cout << "Stack Overflow\n";
             return;
         }
-        arr[++topIndex] = x;
+        topIndex++;
+        arr[topIndex] = x;
     }
 
     void pop() {
@@ -146,17 +220,19 @@ int main() {
     StackArray st;
     st.push(10);
     st.push(20);
-    cout << st.top() << "\n"; // 20
+    st.push(30);
+
+    cout << st.top() << "\n"; // 30
     st.pop();
-    cout << st.top() << "\n"; // 10
+    cout << st.top() << "\n"; // 20
 }
 ```
 
 ---
 
-## 6. Stack Implementation Using `vector`
+## 6. Stack using vector
 
-For competitive programming, `vector` is often easier.
+Array fixed size হলে overflow হতে পারে। `vector` dynamic হওয়ায় CP-তে অনেক সময় useful।
 
 ```cpp
 #include <bits/stdc++.h>
@@ -172,7 +248,9 @@ public:
     }
 
     void pop() {
-        if (!v.empty()) v.pop_back();
+        if (!v.empty()) {
+            v.pop_back();
+        }
     }
 
     int top() {
@@ -191,127 +269,69 @@ public:
 
 ---
 
-## 7. Stack Using STL
+## 7. Classroom dry run
 
-In competitive programming, use this most of the time.
+Operations:
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    stack<int> st;
-
-    st.push(5);
-    st.push(10);
-
-    cout << st.top() << "\n"; // 10
-
-    st.pop();
-
-    cout << st.top() << "\n"; // 5
-}
+```text
+push(10)
+push(20)
+push(30)
+pop()
+push(40)
+top()
 ```
 
-### STL Stack common functions
+Step by step:
 
-| Function | Use |
-|---|---|
-| `st.push(x)` | Insert |
-| `st.pop()` | Remove top, does not return value |
-| `st.top()` | Access top |
-| `st.empty()` | Check empty |
-| `st.size()` | Size |
-
-### Common CP warning
-
-`pop()` does not return the top element.  
-Use:
-
-```cpp
-int x = st.top();
-st.pop();
+```text
+push(10): 10
+push(20): 20, 10
+push(30): 30, 20, 10
+pop():    20, 10
+push(40): 40, 20, 10
+top():    40
 ```
+
+Final stack:
+
+```text
+Top -> 40
+       20
+       10
+```
+
+Output of `top()` is `40`.
 
 ---
 
-## 8. Linked List Stack
+## 8. Application 1: Balanced Parentheses
 
-### Idea
+### Problem idea
 
-The head of linked list acts as stack top.
+String দেওয়া আছে। Check করতে হবে brackets balanced কিনা।
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
+Balanced:
 
-struct Node {
-    int data;
-    Node* next;
-
-    Node(int value) {
-        data = value;
-        next = nullptr;
-    }
-};
-
-class StackLinkedList {
-private:
-    Node* topNode;
-
-public:
-    StackLinkedList() {
-        topNode = nullptr;
-    }
-
-    bool empty() {
-        return topNode == nullptr;
-    }
-
-    void push(int x) {
-        Node* newNode = new Node(x);
-        newNode->next = topNode;
-        topNode = newNode;
-    }
-
-    void pop() {
-        if (empty()) {
-            cout << "Stack Underflow\n";
-            return;
-        }
-        Node* temp = topNode;
-        topNode = topNode->next;
-        delete temp;
-    }
-
-    int top() {
-        if (empty()) {
-            cout << "Stack is empty\n";
-            return -1;
-        }
-        return topNode->data;
-    }
-};
+```text
+()[]{}
+({[]})
 ```
 
-### Discussion point
+Not balanced:
 
-Array stack has fixed capacity unless dynamic.  
-Linked list stack grows dynamically but uses extra memory for pointers.
+```text
+([)]
+(()
+])
+```
 
----
+### Stack idea
 
-## 9. Application 1: Balanced Parentheses
-
-### Problem
-
-Given a string containing brackets `()`, `{}`, `[]`, determine whether it is balanced.
-
-### Pattern
-
-Use stack to store opening brackets.
-
-### Code
+* Opening bracket পেলে stack-এ push করব।
+* Closing bracket পেলে stack-এর top এর সাথে match করব।
+* Match হলে pop করব।
+* শেষে stack empty হলে balanced।
 
 ```cpp
 #include <bits/stdc++.h>
@@ -342,28 +362,126 @@ int main() {
     string s;
     cin >> s;
 
-    cout << (isBalanced(s) ? "YES" : "NO") << "\n";
+    if (isBalanced(s)) cout << "YES\n";
+    else cout << "NO\n";
 }
 ```
 
-### Complexity
+Complexity:
 
-- Time: `O(n)`
-- Space: `O(n)`
-
-### CP Problems
-
-- HackerRank: Balanced Brackets
-- LeetCode 20: Valid Parentheses
-- LightOJ / Codeforces bracket sequence problems
+```text
+Time:  O(n)
+Space: O(n)
+```
 
 ---
 
-## 10. Application 2: Next Greater Element
+## 9. Application 2: Backspace / Undo style problem
+
+ধরো string-এ `B` মানে backspace।
+
+Input:
+
+```text
+01B0
+```
+
+Process:
+
+```text
+0
+01
+0      // B pressed, last char removed
+00
+```
+
+Final answer:
+
+```text
+00
+```
+
+Stack idea:
+
+* Normal char হলে push
+* Backspace হলে pop
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+
+    string st;
+
+    for (char c : s) {
+        if (c == 'B') {
+            if (!st.empty()) st.pop_back();
+        } else {
+            st.push_back(c);
+        }
+    }
+
+    cout << st << "\n";
+}
+```
+
+Note: এখানে `string`-কেই stack এর মতো use করা হয়েছে। `push_back()` হলো push, `pop_back()` হলো pop।
+
+---
+
+## 10. Application 3: Remove adjacent duplicate / cancellation
+
+অনেক problem-এ বলা থাকে পাশের দুইটা same হলে remove হবে।
+
+Example:
+
+```text
+abbaca
+```
+
+Process:
+
+```text
+abbaca -> aaca -> ca
+```
+
+Stack idea:
+
+* Current char যদি stack top এর equal হয়, top pop।
+* না হলে current char push।
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+
+    string st;
+
+    for (char c : s) {
+        if (!st.empty() && st.back() == c) {
+            st.pop_back();
+        } else {
+            st.push_back(c);
+        }
+    }
+
+    cout << st << "\n";
+}
+```
+
+---
+
+## 11. Application 4: Next Greater Element
 
 ### Problem
 
-For each element, find the next element on the right that is greater.
+প্রতিটি element-এর ডান পাশে প্রথম বড় element বের করতে হবে।
 
 Example:
 
@@ -372,13 +490,13 @@ Input:  2 1 5 3
 Output: 5 5 -1 -1
 ```
 
-### Naive solution
+### Naive idea
 
-For each index, scan right side → `O(n^2)`
+প্রতিটি index থেকে right side scan করলে `O(n^2)`।
 
-### Stack solution
+### Stack idea
 
-Use a **monotonic decreasing stack**.
+Monotonic stack use করলে `O(n)`।
 
 ```cpp
 #include <bits/stdc++.h>
@@ -391,7 +509,7 @@ int main() {
     vector<int> a(n), ans(n, -1);
     for (int i = 0; i < n; i++) cin >> a[i];
 
-    stack<int> st; // stores indices
+    stack<int> st; // index store করব
 
     for (int i = 0; i < n; i++) {
         while (!st.empty() && a[i] > a[st.top()]) {
@@ -406,30 +524,26 @@ int main() {
 }
 ```
 
-### Complexity
+Why `O(n)`?
 
-- Time: `O(n)`
-- Space: `O(n)`
-
-Each element is pushed once and popped once.
+প্রতিটি element stack-এ একবার push হয় এবং সর্বোচ্চ একবার pop হয়। তাই total কাজ `O(n)`।
 
 ---
 
-## 11. Monotonic Stack
+## 12. Monotonic Stack pattern
 
-A **monotonic stack** maintains elements in increasing or decreasing order.
+**Monotonic stack** এমন stack যেখানে elements increasing/decreasing order maintain করে রাখা হয়।
 
-### When to use
+এই phrase গুলো দেখলে stack ভাববে:
 
-Look for phrases like:
-
-- Next greater element
-- Previous greater element
-- Next smaller element
-- Previous smaller element
-- Nearest greater/smaller
-- Remove elements while condition holds
-- Largest rectangle in histogram
+* next greater element
+* next smaller element
+* previous greater element
+* previous smaller element
+* nearest greater/smaller
+* first greater/smaller on left/right
+* remove while condition true
+* largest rectangle in histogram
 
 ### Template: Next Smaller Element
 
@@ -437,7 +551,7 @@ Look for phrases like:
 vector<int> nextSmaller(vector<int>& a) {
     int n = a.size();
     vector<int> ans(n, -1);
-    stack<int> st;
+    stack<int> st; // index store
 
     for (int i = 0; i < n; i++) {
         while (!st.empty() && a[i] < a[st.top()]) {
@@ -453,24 +567,18 @@ vector<int> nextSmaller(vector<int>& a) {
 
 ---
 
-## 12. Application 3: Largest Rectangle in Histogram
+## 13. Advanced Application: Largest Rectangle in Histogram
 
-### Problem idea
+এই problem advanced, কিন্তু stack শেখানোর জন্য খুব important।
 
-Given heights of bars, find the largest rectangle area.
+### Main idea
 
-### Key concept
+প্রতিটি bar-এর জন্য জানতে হবে:
 
-For each bar, find:
+* left side-এ previous smaller কোথায়
+* right side-এ next smaller কোথায়
 
-- Previous smaller element
-- Next smaller element
-
-Then width can be calculated.
-
-### CP importance
-
-This is one of the most important stack problems.
+তাহলে ঐ bar height ধরে maximum width বের করা যায়।
 
 ```cpp
 #include <bits/stdc++.h>
@@ -513,241 +621,165 @@ int main() {
 
 ---
 
-## 13. Application 4: Expression Evaluation
+## 14. Common mistakes
 
-Stack is used for:
-
-- Infix to postfix conversion
-- Postfix evaluation
-- Prefix evaluation
-- Operator precedence handling
-
-### Postfix evaluation example
-
-Expression: `2 3 + 4 *`
-
-Meaning: `(2 + 3) * 4 = 20`
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int evaluatePostfix(vector<string> tokens) {
-    stack<int> st;
-
-    for (string token : tokens) {
-        if (token == "+" || token == "-" || token == "*" || token == "/") {
-            int b = st.top(); st.pop();
-            int a = st.top(); st.pop();
-
-            if (token == "+") st.push(a + b);
-            else if (token == "-") st.push(a - b);
-            else if (token == "*") st.push(a * b);
-            else st.push(a / b);
-        } else {
-            st.push(stoi(token));
-        }
-    }
-
-    return st.top();
-}
-```
+1. Empty stack হলে `top()` call করা।
+2. Empty stack হলে `pop()` call করা।
+3. মনে করা `pop()` value return করে।
+4. Stack আর queue confuse করা।
+5. Monotonic stack-এ value store করা, কিন্তু problem-এর জন্য index দরকার ছিল।
+6. Duplicate value handle না করা।
+7. `while` এর জায়গায় ভুল করে `if` use করা।
+8. Bracket matching-এ closing bracket আসলে empty check না করা।
 
 ---
 
-## 14. Application 5: DFS Using Stack
+## 15. Stack vs Queue quick difference
 
-Recursive DFS internally uses call stack.  
-We can also implement DFS iteratively using stack.
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<int>> graph(n + 1);
-
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        cin >> u >> v;
-        graph[u].push_back(v);
-        graph[v].push_back(u);
-    }
-
-    vector<bool> visited(n + 1, false);
-    stack<int> st;
-
-    st.push(1);
-    visited[1] = true;
-
-    while (!st.empty()) {
-        int node = st.top();
-        st.pop();
-
-        cout << node << " ";
-
-        for (int child : graph[node]) {
-            if (!visited[child]) {
-                visited[child] = true;
-                st.push(child);
-            }
-        }
-    }
-}
-```
+| Topic   | Stack        | Queue        |
+| ------- | ------------ | ------------ |
+| Rule    | LIFO         | FIFO         |
+| Insert  | top          | back/rear    |
+| Remove  | top          | front        |
+| Analogy | plate stack  | line/queue   |
+| C++ STL | `stack<int>` | `queue<int>` |
 
 ---
 
-## 15. Teaching Flow
+## 16. Teaching flow
 
-### Class 1: Concept + Basic Implementation
+### Class 1: Concept + Basic Operations
 
-1. Explain LIFO with examples.
-2. Demonstrate `push`, `pop`, `top`.
-3. Draw stack state after each operation.
-4. Implement using array.
-5. Discuss overflow and underflow.
+1. Plate analogy দিয়ে LIFO explain.
+2. `push`, `pop`, `top`, `empty`, `size` বোঝানো।
+3. Board-এ stack dry run।
+4. Array implementation দেখানো।
+5. Overflow/underflow explain।
 
-### Class 2: STL + CP Problems
+### Class 2: STL + Easy CP Pattern
 
-1. Introduce `stack<int>`.
-2. Solve balanced parentheses.
-3. Solve next greater element.
-4. Explain monotonic stack.
+1. `stack<int>` and `stack<char>` use।
+2. Balanced parentheses solve।
+3. Backspace/undo problem solve।
+4. Adjacent duplicate cancellation।
 
-### Class 3: Advanced Stack Applications
+### Class 3: Monotonic Stack
 
-1. Largest rectangle in histogram.
-2. Expression evaluation.
-3. Iterative DFS.
-4. Practice contest.
+1. Next greater element naive `O(n^2)` explain।
+2. Stack solution `O(n)` explain।
+3. Next smaller template।
+4. Practice problem discussion।
 
----
+### Class 4: Advanced
 
-## 16. Classroom Demonstration
-
-Given operations:
-
-```text
-push(10)
-push(20)
-push(30)
-pop()
-push(40)
-top()
-```
-
-Final stack:
-
-```text
-Top -> 40
-       20
-       10
-```
-
-Output of `top()` is `40`.
+1. Histogram rectangle।
+2. Mixed bracket replacement।
+3. Contest-style practice।
 
 ---
 
-## 17. Common Mistakes
+## 17. 12 Practice Problems — 4 each from Codeforces, AtCoder, CodeChef
 
-1. Calling `top()` when stack is empty.
-2. Thinking `pop()` returns value.
-3. Forgetting to pop inside `while`.
-4. Confusing stack with queue.
-5. Using stack when order should be FIFO.
-6. In monotonic stack, storing values when indices are needed.
-7. Not handling duplicate values properly.
+### Codeforces — 4 problems
 
----
+| # | Problem                                                    | Level       | Stack pattern                                 |
+| - | ---------------------------------------------------------- | ----------- | --------------------------------------------- |
+| 1 | Codeforces 343B — Alternating Current                      | Easy        | adjacent cancellation using stack             |
+| 2 | Codeforces 1104B — Game with string                        | Easy-Medium | remove adjacent equal characters, count moves |
+| 3 | Codeforces 612C — Replace To Make Regular Bracket Sequence | Medium      | bracket matching + replacement count          |
+| 4 | Codeforces 5C — Longest Regular Bracket Sequence           | Medium-Hard | longest valid bracket substring               |
 
-## 18. CP Pattern Recognition
+Links:
 
-Use stack when:
+* [https://codeforces.com/problemset/problem/343/B](https://codeforces.com/problemset/problem/343/B)
+* [https://codeforces.com/problemset/problem/1104/B](https://codeforces.com/problemset/problem/1104/B)
+* [https://codeforces.com/problemset/problem/612/C](https://codeforces.com/problemset/problem/612/C)
+* [https://codeforces.com/problemset/problem/5/C](https://codeforces.com/problemset/problem/5/C)
 
-- Recent previous element matters.
-- You need to reverse order.
-- Matching pairs are involved.
-- Nested structure exists.
-- You need nearest greater/smaller element.
-- Recursion can be simulated.
-- You need undo/backtracking behavior.
+### AtCoder — 4 problems
 
----
+| # | Problem                            | Level       | Stack pattern                                           |
+| - | ---------------------------------- | ----------- | ------------------------------------------------------- |
+| 1 | AtCoder ABC043 B — Unhappy Hacking | Easy        | backspace simulation                                    |
+| 2 | AtCoder ABC120 C — Unification     | Easy-Medium | remove adjacent different characters / stack simulation |
+| 3 | AtCoder ABC240 D — Strange Balls   | Medium      | stack of pairs, frequency tracking                      |
+| 4 | AtCoder ABC328 D — Take ABC        | Medium      | remove substring using stack/string                     |
 
-## 19. Practice Problems
+Links:
 
-### Beginner
+* [https://atcoder.jp/contests/abc043/tasks/abc043_b](https://atcoder.jp/contests/abc043/tasks/abc043_b)
+* [https://atcoder.jp/contests/abc120/tasks/abc120_c](https://atcoder.jp/contests/abc120/tasks/abc120_c)
+* [https://atcoder.jp/contests/abc240/tasks/abc240_d](https://atcoder.jp/contests/abc240/tasks/abc240_d)
+* [https://atcoder.jp/contests/abc328/tasks/abc328_d](https://atcoder.jp/contests/abc328/tasks/abc328_d)
 
-1. Implement stack using array.
-2. Implement stack using linked list.
-3. Reverse a string using stack.
-4. Check balanced parentheses.
-5. Remove adjacent duplicate characters.
+### CodeChef — 4 problems
 
-### Intermediate
+| # | Problem                                           | Level  | Stack pattern        |
+| - | ------------------------------------------------- | ------ | -------------------- |
+| 1 | CodeChef STACK08 — Stack Introduction             | Easy   | basic stack concept  |
+| 2 | CodeChef STACK05 — Valid Parenthesis              | Easy   | balanced parentheses |
+| 3 | CodeChef STACT10 — Next Greater Element Algorithm | Medium | monotonic stack      |
+| 4 | CodeChef STACK14 — Next Smaller Element           | Medium | monotonic stack      |
 
-1. Next Greater Element
-2. Next Smaller Element
-3. Previous Greater Element
-4. Previous Smaller Element
-5. Stock Span Problem
-6. Min Stack
-7. Queue using two stacks
+Links:
 
-### Advanced
-
-1. Largest Rectangle in Histogram
-2. Maximal Rectangle in Binary Matrix
-3. Remove K Digits
-4. Decode String
-5. Asteroid Collision
-6. Sum of Subarray Minimums
-7. Basic Calculator
-
-### Suggested online platforms
-
-- Codeforces
-- LeetCode
-- HackerRank
-- CSES
-- AtCoder
-- LightOJ
+* [https://www.codechef.com/learn/course/stacks-and-queues/LSTACKS/problems/STACK08](https://www.codechef.com/learn/course/stacks-and-queues/LSTACKS/problems/STACK08)
+* [https://www.codechef.com/learn/course/stacks-and-queues/LSTACKS02/problems/STACK05](https://www.codechef.com/learn/course/stacks-and-queues/LSTACKS02/problems/STACK05)
+* [https://www.codechef.com/learn/course/stacks-and-queues/LSTACKS02/problems/STACT10](https://www.codechef.com/learn/course/stacks-and-queues/LSTACKS02/problems/STACT10)
+* [https://www.codechef.com/learn/course/stacks-and-queues/LSTACKS02/problems/STACK14](https://www.codechef.com/learn/course/stacks-and-queues/LSTACKS02/problems/STACK14)
 
 ---
 
-## 20. Mini Contest Plan
+## 18. Suggested order for students
+
+Students যেন easy থেকে hard order-এ solve করে:
+
+1. CodeChef STACK08 — Stack Introduction
+2. AtCoder ABC043 B — Unhappy Hacking
+3. CodeChef STACK05 — Valid Parenthesis
+4. Codeforces 343B — Alternating Current
+5. AtCoder ABC120 C — Unification
+6. Codeforces 1104B — Game with string
+7. CodeChef STACT10 — Next Greater Element Algorithm
+8. CodeChef STACK14 — Next Smaller Element
+9. AtCoder ABC240 D — Strange Balls
+10. AtCoder ABC328 D — Take ABC
+11. Codeforces 612C — Replace To Make Regular Bracket Sequence
+12. Codeforces 5C — Longest Regular Bracket Sequence
+
+---
+
+## 19. Mini contest plan
 
 Duration: 90 minutes
 
-| Problem | Topic | Difficulty |
-|---|---|---|
-| A | Stack implementation | Easy |
-| B | Balanced brackets | Easy |
-| C | Next greater element | Medium |
-| D | Stock span | Medium |
-| E | Histogram rectangle | Hard |
+| Problem | Topic                 | Difficulty  |
+| ------- | --------------------- | ----------- |
+| A       | Basic stack operation | Easy        |
+| B       | Backspace simulation  | Easy        |
+| C       | Balanced parentheses  | Easy-Medium |
+| D       | Adjacent cancellation | Medium      |
+| E       | Next greater element  | Medium      |
 
 ---
 
-## 21. Assignment
+## 20. Final revision
 
-1. Implement stack using array and linked list.
-2. Compare both implementations.
-3. Solve at least 5 stack CP problems.
-4. Write complexity analysis for each solution.
-5. Explain one real-life application of stack.
+* Stack follows **LIFO**.
+* `push`, `pop`, `top`, `empty`, `size` are main operations.
+* `push`, `pop`, `top` usually `O(1)`।
+* C++ STL stack-এ `pop()` value return করে না।
+* Always check `empty()` before `top()` or `pop()`।
+* Bracket matching, undo/backspace, recursion, expression evaluation, DFS simulation, next greater/smaller — এসব জায়গায় stack লাগে।
+* Monotonic stack শেখা CP-র জন্য very important।
 
 ---
 
-## 22. Quick Revision Sheet
+## 21. Homework
 
-- Stack follows LIFO.
-- `push`, `pop`, `top` are `O(1)`.
-- STL stack is best for CP unless custom behavior is needed.
-- Monotonic stack solves nearest greater/smaller problems in `O(n)`.
-- Always check `empty()` before `top()` or `pop()`.
-- Use stack for brackets, recursion simulation, expression problems, and nested structures.
+1. Stack using array implement করো।
+2. Stack using vector implement করো।
+3. Balanced parentheses solve করো।
+4. Next greater element solve করো।
+5. Practice list থেকে minimum 5টা problem solve করো।
+6. প্রতিটা solution-এর time and space complexity লিখো।
