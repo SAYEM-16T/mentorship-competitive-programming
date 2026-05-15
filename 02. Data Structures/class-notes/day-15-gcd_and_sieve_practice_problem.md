@@ -1,0 +1,5 @@
+1. [Codeforces 177B1 — Rectangular Game](https://codeforces.com/problemset/problem/177/B1)  
+2. [Codeforces 177B2 — Rectangular Game](https://codeforces.com/problemset/problem/177/B2)  
+3. [Codeforces 630J — Divisibility](https://codeforces.com/problemset/problem/630/J)  
+4. [Codeforces 660A — Co-prime Array](https://codeforces.com/problemset/problem/660/A)  
+5. [Codeforces 230B — T-primes](https://codeforces.com/problemset/problem/230/B)
